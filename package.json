@@ -11,8 +11,8 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "index",
-      "title": "Dust.tt",
+      "name": "ask",
+      "title": "Ask Dust",
       "description": "Query dust.tt",
       "mode": "view",
       "arguments": [
