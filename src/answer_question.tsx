@@ -55,7 +55,7 @@ export function AskDustQuestion({ question }: { question: string }) {
   }, [dustCredentials]);
 
   useEffect(() => {
-    if (dustApi) {
+    if (dustApi && question) {
       (async () => {
         await answerQuestion({ question, dustApi, setDustAnswer, setConversationId });
       })();
@@ -66,12 +66,16 @@ export function AskDustQuestion({ question }: { question: string }) {
     return <SetCredentialsForm />;
   }
 
+  if (!question) {
+    return null;
+  }
+
   const dustAssistantUrl = `https://dust.tt/w/${dustCredentials?.workspaceId}/assistant`;
 
   return (
     <Detail
-      markdown={dustAnswer || "Dust is thinking..."}
-      navigationTitle={question}
+      markdown={dustAnswer || `Dust is thinking about your question: *${question}*`}
+      navigationTitle={question || "Ask Dust"}
       isLoading={!dustAnswer}
       actions={
         <ActionPanel>

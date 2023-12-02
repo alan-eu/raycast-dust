@@ -23,6 +23,12 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "explain",
+      "title": "Explain",
+      "description": "Explain highlighted text",
+      "mode": "view"
     }
   ],
   "dependencies": {
