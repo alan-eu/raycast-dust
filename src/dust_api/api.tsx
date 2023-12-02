@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import { createParser } from "eventsource-parser";
-import got from "got";
 import { ConversationType, UserMessageType } from "./conversation";
 import { useDustCredentials } from "../credentials";
 import { useEffect, useState } from "react";
@@ -9,6 +8,11 @@ import { AgentConfigurationType } from "./agent";
 export type DustAPICredentials = {
   apiKey: string;
   workspaceId: string;
+};
+
+type DustAPIErrorResponse = {
+  type: string;
+  message: string;
 };
 
 const DUST_API_URL = "https://dust.tt/api/v1/w";
@@ -90,36 +94,41 @@ export class DustApi {
     error?: string;
   }> {
     const { apiKey } = this._credentials;
-    try {
-      const response = await got.post(this._conversationApiUrl, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-        json: {
-          visibility: "unlisted",
-          title: null,
-          message: {
-            content: question,
-            mentions: [
-              {
-                configurationId: agentId,
-              },
-            ],
-            context: {
-              timezone: "Europe/Paris",
-              username: "raycast",
-              email: null,
-              fullName: "Raycast",
-              profilePictureUrl: "https://dust.tt/static/systemavatar/helper_avatar_full.png",
+    const response = await fetch(this._conversationApiUrl, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        visibility: "unlisted",
+        title: null,
+        message: {
+          content: question,
+          mentions: [
+            {
+              configurationId: agentId,
             },
+          ],
+          context: {
+            timezone: "Europe/Paris",
+            username: "raycast",
+            email: null,
+            fullName: "Raycast",
+            profilePictureUrl: "https://dust.tt/static/systemavatar/helper_avatar_full.png",
           },
         },
-        responseType: "json",
-      });
-      return { conversation: response.body.conversation, message: response.body.message };
-    } catch (error: got.RequestError) {
-      return { error: error.message };
+      }),
+    });
+    const json = (await response.json()) as {
+      conversation?: ConversationType;
+      message?: UserMessageType;
+      error?: DustAPIErrorResponse;
+    };
+    if (json.error) {
+      return { error: json.error.message };
     }
+    return json as { conversation: ConversationType; message: UserMessageType };
   }
 
   async streamAgentMessageEvents({ conversationId, messageId }: { conversationId: string; messageId: string }) {
@@ -266,17 +275,20 @@ export class DustApi {
     const { apiKey, workspaceId } = this._credentials;
     const agentsUrl = `${DUST_API_URL}/${workspaceId}/assistant/agent_configurations`;
 
-    try {
-      const response = await got.get(agentsUrl, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-        responseType: "json",
-      });
-      return { agents: response.body.agentConfigurations };
-    } catch (error: got.RequestError) {
-      return { error: error.message };
+    const response = await fetch(agentsUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+    const json = (await response.json()) as {
+      agentConfigurations?: AgentConfigurationType[];
+      error?: DustAPIErrorResponse;
+    };
+    if (json.error) {
+      return { error: json.error.message };
     }
+    return { agents: json.agentConfigurations };
   }
 }
 

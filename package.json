@@ -5,6 +5,7 @@
   "description": "Query dust.tt",
   "icon": "dust.png",
   "author": "vineus",
+  "owner": "alan",
   "categories": [
     "Productivity"
   ],
@@ -47,7 +48,6 @@
     "@raycast/api": "^1.62.2",
     "date-fns": "^3.0.0-alpha.2",
     "eventsource-parser": "^1.1.1",
-    "got": "^13.0.0",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
