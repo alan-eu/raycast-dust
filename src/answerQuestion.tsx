@@ -2,6 +2,7 @@ import { ActionPanel, Detail, showToast, Toast, useNavigation, Action, Icon } fr
 import { DustApi, DustAPICredentials } from "./dust_api/api";
 import { SetCredentialsForm, useGetConfig } from "./credentials";
 import { useEffect, useState } from "react";
+import { addDustHistory } from "./history";
 
 async function answerQuestion({
   question,
@@ -27,6 +28,14 @@ async function answerQuestion({
       conversation: conversation,
       message: message,
       setDustAnswer: setDustAnswer,
+      onDone: async (answer) => {
+        await addDustHistory({
+          conversationId: conversation.sId,
+          question: question,
+          answer: answer,
+          date: new Date(),
+        });
+      },
     });
   }
 }

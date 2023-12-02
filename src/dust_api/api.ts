@@ -189,10 +189,12 @@ export class DustApi {
     conversation,
     message,
     setDustAnswer,
+    onDone,
   }: {
     conversation: ConversationType;
     message: UserMessageType;
     setDustAnswer: (answer: string) => void;
+    onDone?: (answer: string) => void;
   }) {
     {
       const conversationId = conversation.sId;
@@ -240,8 +242,11 @@ export class DustApi {
             break;
           }
           case "agent_generation_success": {
-            answer = event.text;
-            setDustAnswer(cleanupEventText(answer));
+            answer = cleanupEventText(event.text);
+            setDustAnswer(answer);
+            if (onDone) {
+              onDone(answer);
+            }
             return;
           }
           default:

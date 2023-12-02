@@ -10,7 +10,7 @@ export default function ExplainDustCommand() {
     async function fetchHighlightedText() {
       try {
         const text = await getSelectedText();
-        setQuestion(`can you explain this: ${text} ?`);
+        setQuestion(`explain this: ${text} ?`);
       } catch (error) {
         showToast(Toast.Style.Failure, "Could not get highlighted text");
       }

@@ -29,10 +29,17 @@
       "title": "Explain",
       "description": "Explain highlighted text",
       "mode": "view"
+    },
+    {
+      "name": "history",
+      "title": "Questions history",
+      "description": "Show the last 10 questions and answers",
+      "mode": "view"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.62.2",
+    "date-fns": "^3.0.0-alpha.2",
     "eventsource-parser": "^1.1.1",
     "got": "^13.0.0",
     "node-fetch": "^3.3.2"
