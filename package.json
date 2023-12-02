@@ -26,6 +26,20 @@
       ]
     },
     {
+      "name": "ask-gpt",
+      "title": "Ask GPT-4",
+      "description": "Query gpt-4 on Dust.tt",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "search",
+          "placeholder": "Ask a question",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "explain",
       "title": "Explain",
       "description": "Explain highlighted text",
