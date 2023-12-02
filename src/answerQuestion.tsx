@@ -1,6 +1,5 @@
-import { ActionPanel, Detail, showToast, Toast, Action, Icon } from "@raycast/api";
-import { DustApi, useDustApi } from "./dust_api/api";
-import { SetCredentialsAction, SetCredentialsForm, useCheckAccess, useDustCredentials } from "./credentials";
+import { Action, ActionPanel, Detail, getPreferenceValues, Icon, showToast, Toast } from "@raycast/api";
+import { DustApi, DustAPICredentials } from "./dust_api/api";
 import { useEffect, useState } from "react";
 import { addDustHistory } from "./history";
 import { AgentType } from "./dust_api/agent";
@@ -51,17 +50,14 @@ export function AskDustQuestion({
   question: string;
   agent?: AgentType;
 }) {
-  const { credentials: dustCredentials } = useDustCredentials();
-  const { isLoading: checkAccessLoading } = useCheckAccess();
-  const { api: dustApi } = useDustApi();
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [dustAnswer, setDustAnswer] = useState<string | undefined>(undefined);
 
+  const preferences = getPreferenceValues<DustAPICredentials>();
+  const dustApi = new DustApi(preferences);
+
   useEffect(() => {
-    if (checkAccessLoading) {
-      return;
-    }
-    if (dustApi && question) {
+    if (question) {
       (async () => {
         await answerQuestion({
           question: question,
@@ -72,22 +68,22 @@ export function AskDustQuestion({
         });
       })();
     }
-  }, [dustApi, question, checkAccessLoading]);
+  }, [question]);
 
   if (!question) {
     return null;
   }
 
-  const dustAssistantUrl = `https://dust.tt/w/${dustCredentials?.workspaceId}/assistant`;
+  const dustAssistantUrl = `https://dust.tt/w/${preferences.workspaceId}/assistant`;
 
   return (
     <Detail
       markdown={dustAnswer || `Dust agent \`${agent.name}\` is thinking about your question:\n\n > ${question}`}
       navigationTitle={question || "Ask Dust"}
-      isLoading={checkAccessLoading || !dustAnswer}
+      isLoading={!dustAnswer}
       actions={
         <ActionPanel>
-          {dustCredentials && !conversationId ? (
+          {!conversationId ? (
             <Action.OpenInBrowser title="Open Dust" url={`${dustAssistantUrl}/new`} icon={Icon.Globe} />
           ) : dustApi && conversationId ? (
             <Action.OpenInBrowser
@@ -96,7 +92,6 @@ export function AskDustQuestion({
               icon={Icon.Globe}
             />
           ) : null}
-          <SetCredentialsAction />
         </ActionPanel>
       }
     />

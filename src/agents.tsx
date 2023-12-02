@@ -1,7 +1,7 @@
 import { AgentConfigurationType } from "./dust_api/agent";
-import { useDustApi } from "./dust_api/api";
+import { DustApi, DustAPICredentials } from "./dust_api/api";
 import { useEffect, useState } from "react";
-import { LocalStorage } from "@raycast/api";
+import { getPreferenceValues, LocalStorage } from "@raycast/api";
 
 async function saveAgents(agents: { [id: string]: AgentConfigurationType }) {
   await LocalStorage.setItem("dust_agents", JSON.stringify(agents));
@@ -20,30 +20,30 @@ export function useAgents(): {
   error?: string;
   isLoading: boolean;
 } {
-  const { api: dustApi } = useDustApi();
   const [agents, setAgents] = useState<{ [id: string]: AgentConfigurationType } | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  const preferences = getPreferenceValues<DustAPICredentials>();
+  const dustApi = new DustApi(preferences);
+
   useEffect(() => {
     (async () => {
-      if (dustApi) {
-        const { agents, error } = await dustApi.getAgents();
-        setError(error);
-        if (agents) {
-          const agentsMap: { [id: string]: AgentConfigurationType } = {};
-          agents.forEach((agent) => {
-            if (agent.status === "active") {
-              agentsMap[agent.sId] = agent;
-            }
-          });
-          setAgents(agentsMap);
-          await saveAgents(agentsMap);
-          setIsLoading(false);
-        }
+      const { agents, error } = await dustApi.getAgents();
+      setError(error);
+      if (agents) {
+        const agentsMap: { [id: string]: AgentConfigurationType } = {};
+        agents.forEach((agent) => {
+          if (agent.status === "active") {
+            agentsMap[agent.sId] = agent;
+          }
+        });
+        setAgents(agentsMap);
+        await saveAgents(agentsMap);
+        setIsLoading(false);
       }
     })();
-  }, [dustApi]);
+  }, []);
 
   useEffect(() => {
     (async () => {

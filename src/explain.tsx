@@ -1,7 +1,6 @@
-import { Detail } from "@raycast/api";
+import { Detail, getSelectedText, showToast, Toast } from "@raycast/api";
 import { AskDustQuestion } from "./answerQuestion";
 import { useEffect, useState } from "react";
-import { getSelectedText, showToast, Toast } from "@raycast/api";
 
 export default function ExplainDustCommand() {
   const [question, setQuestion] = useState<string | null>(null);

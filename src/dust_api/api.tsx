@@ -1,8 +1,6 @@
 import fetch from "node-fetch";
 import { createParser } from "eventsource-parser";
 import { ConversationType, UserMessageType } from "./conversation";
-import { useDustCredentials } from "../credentials";
-import { useEffect, useState } from "react";
 import { AgentConfigurationType } from "./agent";
 
 export type DustAPICredentials = {
@@ -290,21 +288,4 @@ export class DustApi {
     }
     return { agents: json.agentConfigurations };
   }
-}
-
-export function useDustApi(): { api: DustApi | undefined; isLoading: boolean } {
-  const { credentials } = useDustCredentials();
-  const [dustApi, setDustApi] = useState<DustApi | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      if (credentials) {
-        const api = new DustApi(credentials);
-        setDustApi(api);
-        setIsLoading(false);
-      }
-    })();
-  }, [credentials]);
-  return { api: dustApi, isLoading: isLoading };
 }

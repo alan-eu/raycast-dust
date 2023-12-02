@@ -10,6 +10,24 @@
     "Productivity"
   ],
   "license": "MIT",
+  "preferences": [
+    {
+      "name": "apiKey",
+      "description": "Your Dust API key",
+      "type": "textfield",
+      "required": true,
+      "title": "API key",
+      "placeholder": "sk-xxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "name": "workspaceId",
+      "description": "Your Dust workspace ID",
+      "type": "textfield",
+      "required": true,
+      "title": "Workspace ID",
+      "placeholder": "xxxxxxxx"
+    }
+  ],
   "commands": [
     {
       "name": "ask",

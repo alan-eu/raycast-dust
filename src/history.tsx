@@ -1,8 +1,7 @@
-import { Action, ActionPanel, Detail, Icon, List, LocalStorage } from "@raycast/api";
+import { Action, ActionPanel, getPreferenceValues, Icon, List, LocalStorage, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { showToast, Toast } from "@raycast/api";
 import { format } from "date-fns";
-import { useCheckAccess, useDustCredentials } from "./credentials";
+import { DustAPICredentials } from "./dust_api/api";
 
 export interface DustHistory {
   conversationId: string;
@@ -31,9 +30,8 @@ export async function addDustHistory(history: DustHistory) {
 
 export default function DustHistoryCommand() {
   const [history, setHistory] = useState<DustHistory[] | null>(null);
-  const { credentials: dustCredentials } = useDustCredentials();
+  const preferences = getPreferenceValues<DustAPICredentials>();
   const [showDetails, setShowDetails] = useState(false);
-  const { isLoading: checkAccessLoading } = useCheckAccess();
 
   useEffect(() => {
     async function history() {
@@ -47,10 +45,10 @@ export default function DustHistoryCommand() {
     history();
   }, []);
 
-  const dustAssistantUrl = `https://dust.tt/w/${dustCredentials?.workspaceId}/assistant`;
+  const dustAssistantUrl = `https://dust.tt/w/${preferences.workspaceId}/assistant`;
 
   return (
-    <List isLoading={checkAccessLoading || history === null} isShowingDetail={showDetails}>
+    <List isLoading={history === null} isShowingDetail={showDetails}>
       {history && history.length > 0 ? (
         history
           .sort((a, b) => b.date.getTime() - a.date.getTime())
