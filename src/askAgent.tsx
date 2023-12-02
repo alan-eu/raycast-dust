@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Form, Icon, LaunchType, List, useNavigation } from "@raycast/api";
+import { Action, ActionPanel, Form, Icon, LaunchType, List, showToast, Toast, useNavigation } from "@raycast/api";
 import { useAgents } from "./agents";
 import AskDustCommand from "./ask";
 import { AgentConfigurationType } from "./dust_api/agent";
@@ -32,8 +32,20 @@ function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
 }
 
 export default function AskDustAgentCommand() {
-  const { agents, isLoading } = useAgents();
+  const { agents, isLoading, error } = useAgents();
 
+  if (error) {
+    showToast({
+      style: Toast.Style.Failure,
+      title: `Could not refresh agents list: ${error}`,
+    });
+  }
+  if (!isLoading && agents) {
+    showToast({
+      style: Toast.Style.Success,
+      title: `Loaded ${Object.values(agents).length} agents`,
+    });
+  }
   return (
     <List isLoading={isLoading}>
       {agents &&

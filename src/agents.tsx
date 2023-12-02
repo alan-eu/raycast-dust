@@ -40,8 +40,8 @@ export function useAgents(): {
         });
         setAgents(agentsMap);
         await saveAgents(agentsMap);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     })();
   }, []);
 
