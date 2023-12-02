@@ -2,7 +2,7 @@ import { Action, ActionPanel, Detail, Icon, List, LocalStorage } from "@raycast/
 import { useEffect, useState } from "react";
 import { showToast, Toast } from "@raycast/api";
 import { format } from "date-fns";
-import { useDustCredentials } from "./credentials";
+import { useCheckAccess, useDustCredentials } from "./credentials";
 
 export interface DustHistory {
   conversationId: string;
@@ -31,8 +31,9 @@ export async function addDustHistory(history: DustHistory) {
 
 export default function DustHistoryCommand() {
   const [history, setHistory] = useState<DustHistory[] | null>(null);
-  const dustCredentials = useDustCredentials();
+  const { credentials: dustCredentials } = useDustCredentials();
   const [showDetails, setShowDetails] = useState(false);
+  const { isLoading: checkAccessLoading } = useCheckAccess();
 
   useEffect(() => {
     async function history() {
@@ -49,7 +50,7 @@ export default function DustHistoryCommand() {
   const dustAssistantUrl = `https://dust.tt/w/${dustCredentials?.workspaceId}/assistant`;
 
   return (
-    <List isLoading={history === null} isShowingDetail={showDetails}>
+    <List isLoading={checkAccessLoading || history === null} isShowingDetail={showDetails}>
       {history && history.length > 0 ? (
         history
           .sort((a, b) => b.date.getTime() - a.date.getTime())

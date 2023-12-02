@@ -15,14 +15,21 @@ async function getSavedAgents(): Promise<{ [id: string]: AgentConfigurationType 
   return JSON.parse(agents) as { [id: string]: AgentConfigurationType };
 }
 
-export function useAgents(): { [id: string]: AgentConfigurationType } | undefined {
-  const dustApi = useDustApi();
+export function useAgents(): {
+  agents: { [id: string]: AgentConfigurationType } | undefined;
+  error?: string;
+  isLoading: boolean;
+} {
+  const { api: dustApi } = useDustApi();
   const [agents, setAgents] = useState<{ [id: string]: AgentConfigurationType } | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
       if (dustApi) {
-        const { agents } = await dustApi.getAgents();
+        const { agents, error } = await dustApi.getAgents();
+        setError(error);
         if (agents) {
           const agentsMap: { [id: string]: AgentConfigurationType } = {};
           agents.forEach((agent) => {
@@ -32,6 +39,7 @@ export function useAgents(): { [id: string]: AgentConfigurationType } | undefine
           });
           setAgents(agentsMap);
           await saveAgents(agentsMap);
+          setIsLoading(false);
         }
       }
     })();
@@ -42,8 +50,9 @@ export function useAgents(): { [id: string]: AgentConfigurationType } | undefine
       const saved_agents = await getSavedAgents();
       if (saved_agents) {
         setAgents(saved_agents);
+        setIsLoading(false);
       }
     })();
   }, []);
-  return agents;
+  return { agents: agents, error: error, isLoading: isLoading };
 }

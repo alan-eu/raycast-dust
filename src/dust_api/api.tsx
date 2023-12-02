@@ -280,16 +280,19 @@ export class DustApi {
   }
 }
 
-export function useDustApi(): DustApi | undefined {
-  const dustCredentials = useDustCredentials();
+export function useDustApi(): { api: DustApi | undefined; isLoading: boolean } {
+  const { credentials } = useDustCredentials();
   const [dustApi, setDustApi] = useState<DustApi | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     (async () => {
-      if (dustCredentials) {
-        const api = new DustApi(dustCredentials);
+      if (credentials) {
+        const api = new DustApi(credentials);
         setDustApi(api);
+        setIsLoading(false);
       }
     })();
-  }, [dustCredentials]);
-  return dustApi;
+  }, [credentials]);
+  return { api: dustApi, isLoading: isLoading };
 }

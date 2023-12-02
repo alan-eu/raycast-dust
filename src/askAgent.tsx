@@ -2,6 +2,7 @@ import { Action, ActionPanel, Form, Icon, LaunchType, List, useNavigation } from
 import { useAgents } from "./agents";
 import AskDustCommand from "./ask";
 import { AgentConfigurationType } from "./dust_api/agent";
+import { SetCredentialsAction, useCheckAccess } from "./credentials";
 
 function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
   const { push } = useNavigation();
@@ -26,15 +27,17 @@ function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
     >
       <Form.Description title="Agent" text={agent.name} />
       <Form.Description text={agent.description} />
-      <Form.TextArea id="question" title="Question" autoFocus />
+      <Form.TextArea id="question" title="Question" autoFocus enableMarkdown />
     </Form>
   );
 }
 
 export default function AskDustAgentCommand() {
-  const agents = useAgents();
+  const { agents } = useAgents();
+  const { isLoading: checkAccessLoading } = useCheckAccess();
+
   return (
-    <List isLoading={!agents}>
+    <List isLoading={checkAccessLoading}>
       {agents &&
         Object.values(agents).map((agent) => (
           <List.Item
@@ -51,6 +54,7 @@ export default function AskDustAgentCommand() {
                   shortcut={{ key: "return", modifiers: [] }}
                   target={<AskAgentQuestionForm agent={agent} />}
                 />
+                <SetCredentialsAction />
               </ActionPanel>
             }
           />

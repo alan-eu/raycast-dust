@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import { DustAPICredentials } from "./dust_api/api";
-import { Action, ActionPanel, Form, Icon, LocalStorage, popToRoot, showToast, Toast } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Form,
+  Icon,
+  LocalStorage,
+  popToRoot,
+  showToast,
+  Toast,
+  useNavigation,
+} from "@raycast/api";
+import { useAgents } from "./agents";
 
-export function SetCredentialsForm() {
+export function SetCredentialsForm({ error }: { error?: string }) {
   const [credentials, setCredentials] = useState<DustAPICredentials | undefined>(undefined);
 
   useEffect(() => {
@@ -23,6 +34,7 @@ export function SetCredentialsForm() {
         </ActionPanel>
       }
     >
+      {error && <Form.Description title="Error" text={error} />}
       <Form.TextField id="dustApiKey" title="API key" value={credentials?.apiKey} placeholder="sk-XXXXX" />
       <Form.TextField id="dustWorkspace" title="Workspace ID" value={credentials?.workspaceId} placeholder="XXXXX" />
     </Form>
@@ -66,15 +78,59 @@ function SaveAPIKey() {
   );
 }
 
-export function useDustCredentials(): DustAPICredentials | undefined {
+export function useDustCredentials(): { credentials: DustAPICredentials | undefined; isLoading: boolean } {
   const [dustCredentials, setDustCredentials] = useState<DustAPICredentials | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const credentials = await useGetConfig();
       setDustCredentials(credentials);
+      setIsLoading(false);
     })();
   }, []);
 
-  return dustCredentials;
+  return { credentials: dustCredentials, isLoading: isLoading };
+}
+
+export function SetCredentialsAction() {
+  const { push } = useNavigation();
+
+  return (
+    <Action
+      title="Set Credentials"
+      icon={Icon.Lock}
+      onAction={() => {
+        push(<SetCredentialsForm />);
+      }}
+    />
+  );
+}
+
+export function useCheckAccess(): { isLoading: boolean } {
+  const { credentials, isLoading: isLoadingCredentials } = useDustCredentials();
+  const { error } = useAgents();
+  const [isLoading, setIsLoading] = useState(true);
+  const { push } = useNavigation();
+
+  useEffect(() => {
+    if (isLoadingCredentials) {
+      return;
+    }
+    if (!credentials) {
+      push(<SetCredentialsForm />);
+    }
+  }, [credentials, isLoadingCredentials]);
+
+  useEffect(() => {
+    if (isLoadingCredentials) {
+      return;
+    }
+    if (credentials && error) {
+      push(<SetCredentialsForm error={error} />);
+    } else if (credentials) {
+      setIsLoading(false);
+    }
+  }, [error, isLoadingCredentials, credentials]);
+  return { isLoading: isLoading };
 }

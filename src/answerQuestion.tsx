@@ -1,6 +1,6 @@
-import { ActionPanel, Detail, showToast, Toast, useNavigation, Action, Icon } from "@raycast/api";
+import { ActionPanel, Detail, showToast, Toast, Action, Icon } from "@raycast/api";
 import { DustApi, useDustApi } from "./dust_api/api";
-import { SetCredentialsForm, useDustCredentials } from "./credentials";
+import { SetCredentialsAction, SetCredentialsForm, useCheckAccess, useDustCredentials } from "./credentials";
 import { useEffect, useState } from "react";
 import { addDustHistory } from "./history";
 import { AgentType } from "./dust_api/agent";
@@ -51,13 +51,16 @@ export function AskDustQuestion({
   question: string;
   agent?: AgentType;
 }) {
-  const dustCredentials = useDustCredentials();
-  const dustApi = useDustApi();
+  const { credentials: dustCredentials } = useDustCredentials();
+  const { isLoading: checkAccessLoading } = useCheckAccess();
+  const { api: dustApi } = useDustApi();
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [dustAnswer, setDustAnswer] = useState<string | undefined>(undefined);
-  const { push } = useNavigation();
 
   useEffect(() => {
+    if (checkAccessLoading) {
+      return;
+    }
     if (dustApi && question) {
       (async () => {
         await answerQuestion({
@@ -69,11 +72,7 @@ export function AskDustQuestion({
         });
       })();
     }
-  }, [dustApi, question]);
-
-  if (!dustCredentials) {
-    return <SetCredentialsForm />;
-  }
+  }, [dustApi, question, checkAccessLoading]);
 
   if (!question) {
     return null;
@@ -85,7 +84,7 @@ export function AskDustQuestion({
     <Detail
       markdown={dustAnswer || `Dust agent \`${agent.name}\` is thinking about your question:\n\n > ${question}`}
       navigationTitle={question || "Ask Dust"}
-      isLoading={!dustAnswer}
+      isLoading={checkAccessLoading || !dustAnswer}
       actions={
         <ActionPanel>
           {dustCredentials && !conversationId ? (
@@ -97,13 +96,7 @@ export function AskDustQuestion({
               icon={Icon.Globe}
             />
           ) : null}
-          <Action
-            title="Set API Key"
-            icon={Icon.Lock}
-            onAction={() => {
-              push(<SetCredentialsForm />);
-            }}
-          />
+          <SetCredentialsAction />
         </ActionPanel>
       }
     />
