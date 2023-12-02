@@ -1,5 +1,5 @@
 import { LaunchProps } from "@raycast/api";
-import { AskDustQuestion } from "./answer_question";
+import { AskDustQuestion } from "./answerQuestion";
 
 export default function AskDustCommand(props: LaunchProps<{ arguments: { search: string } }>) {
   const question = props.arguments.search;

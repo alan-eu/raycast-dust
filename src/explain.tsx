@@ -1,5 +1,5 @@
 import { Detail } from "@raycast/api";
-import { AskDustQuestion } from "./answer_question";
+import { AskDustQuestion } from "./answerQuestion";
 import { useEffect, useState } from "react";
 import { getSelectedText, showToast, Toast } from "@raycast/api";
 
