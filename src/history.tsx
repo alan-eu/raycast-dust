@@ -9,6 +9,7 @@ export interface DustHistory {
   question: string;
   answer: string;
   date: Date;
+  agent: string;
 }
 
 export async function getDustHistory(): Promise<DustHistory[]> {
@@ -31,6 +32,7 @@ export async function addDustHistory(history: DustHistory) {
 export default function DustHistoryCommand() {
   const [history, setHistory] = useState<DustHistory[] | null>(null);
   const dustCredentials = useDustCredentials();
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     async function history() {
@@ -47,15 +49,15 @@ export default function DustHistoryCommand() {
   const dustAssistantUrl = `https://dust.tt/w/${dustCredentials?.workspaceId}/assistant`;
 
   return (
-    <List isLoading={history === null} isShowingDetail>
+    <List isLoading={history === null} isShowingDetail={showDetails}>
       {history && history.length > 0 ? (
         history
           .sort((a, b) => b.date.getTime() - a.date.getTime())
           .map((item) => (
             <List.Item
-              key={item.question}
+              key={item.question + item.date.getTime()}
               title={item.question}
-              subtitle={format(item.date, "MM-dd HH:mm")}
+              accessories={[{ tag: item.agent || "Dust" }, { date: item.date }]}
               detail={
                 <List.Item.Detail
                   markdown={`### ${format(item.date, "yyyy-MM-dd HH:mm")}\n\n ### ${(item.question.length > 50
@@ -66,13 +68,21 @@ export default function DustHistoryCommand() {
               }
               actions={
                 <ActionPanel>
+                  <Action
+                    title="Toggle Details"
+                    icon={showDetails ? Icon.EyeDisabled : Icon.Eye}
+                    onAction={() => setShowDetails(!showDetails)}
+                    shortcut={{ modifiers: [], key: "return" }}
+                  />
                   <Action.OpenInBrowser
                     title="Continue on Dust"
                     url={`${dustAssistantUrl}/${item.conversationId}`}
                     icon={Icon.Globe}
+                    shortcut={{ modifiers: ["cmd"], key: "return" }}
                   />
                   <Action
-                    title={"Remove"}
+                    title="Remove"
+                    shortcut={{ modifiers: [], key: "backspace" }}
                     icon={Icon.DeleteDocument}
                     onAction={async () => {
                       const newHistory = history.filter((h) => h.conversationId !== item.conversationId);

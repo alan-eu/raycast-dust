@@ -10,15 +10,15 @@ async function answerQuestion({
   dustApi,
   setDustAnswer,
   setConversationId,
-  agentId = "dust",
+  agent = { sId: "dust", name: "Dust" },
 }: {
   question: string;
   dustApi: DustApi;
   setDustAnswer: (answer: string) => void;
   setConversationId: (conversationId: string) => void;
-  agentId?: string;
+  agent?: AgentType;
 }) {
-  const { conversation, message, error } = await dustApi.createConversation({ question, agentId });
+  const { conversation, message, error } = await dustApi.createConversation({ question: question, agentId: agent.sId });
   if (error || !conversation || !message) {
     showToast({
       style: Toast.Style.Failure,
@@ -37,6 +37,7 @@ async function answerQuestion({
           question: question,
           answer: answer,
           date: new Date(),
+          agent: agent.name,
         });
       },
     });
@@ -62,7 +63,7 @@ export function AskDustQuestion({
         await answerQuestion({
           question: question,
           dustApi: dustApi,
-          agentId: agent.sId,
+          agent: agent,
           setDustAnswer: setDustAnswer,
           setConversationId: setConversationId,
         });
@@ -82,7 +83,7 @@ export function AskDustQuestion({
 
   return (
     <Detail
-      markdown={dustAnswer || `Dust agent \`${agent.name}\` is thinking about your question: *${question}*`}
+      markdown={dustAnswer || `Dust agent \`${agent.name}\` is thinking about your question:\n\n > ${question}`}
       navigationTitle={question || "Ask Dust"}
       isLoading={!dustAnswer}
       actions={
