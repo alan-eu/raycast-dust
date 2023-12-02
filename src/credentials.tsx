@@ -34,7 +34,11 @@ export function SetCredentialsForm({ error }: { error?: string }) {
         </ActionPanel>
       }
     >
-      {error && <Form.Description title="Error" text={error} />}
+      {error ? (
+        <Form.Description title="Error" text={error} />
+      ) : (
+        <Form.Description text="Add an API key from the Admin developers tools.Your workspace ID is in Dust URL" />
+      )}
       <Form.TextField id="dustApiKey" title="API key" value={credentials?.apiKey} placeholder="sk-XXXXX" />
       <Form.TextField id="dustWorkspace" title="Workspace ID" value={credentials?.workspaceId} placeholder="XXXXX" />
     </Form>
