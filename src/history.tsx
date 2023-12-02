@@ -2,8 +2,7 @@ import { Action, ActionPanel, Detail, Icon, List, LocalStorage } from "@raycast/
 import { useEffect, useState } from "react";
 import { showToast, Toast } from "@raycast/api";
 import { format } from "date-fns";
-import { DustAPICredentials } from "./dust_api/api";
-import { useGetConfig } from "./credentials";
+import { useDustCredentials } from "./credentials";
 
 export interface DustHistory {
   conversationId: string;
@@ -31,13 +30,7 @@ export async function addDustHistory(history: DustHistory) {
 
 export default function DustHistoryCommand() {
   const [history, setHistory] = useState<DustHistory[] | null>(null);
-  const [dustCredentials, setDustCredentials] = useState<DustAPICredentials | undefined>(undefined);
-  useEffect(() => {
-    (async () => {
-      const credentials = await useGetConfig();
-      setDustCredentials(credentials);
-    })();
-  }, []);
+  const dustCredentials = useDustCredentials();
 
   useEffect(() => {
     async function history() {

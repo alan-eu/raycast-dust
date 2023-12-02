@@ -65,3 +65,16 @@ function SaveAPIKey() {
     />
   );
 }
+
+export function useDustCredentials(): DustAPICredentials | undefined {
+  const [dustCredentials, setDustCredentials] = useState<DustAPICredentials | undefined>(undefined);
+
+  useEffect(() => {
+    (async () => {
+      const credentials = await useGetConfig();
+      setDustCredentials(credentials);
+    })();
+  }, []);
+
+  return dustCredentials;
+}

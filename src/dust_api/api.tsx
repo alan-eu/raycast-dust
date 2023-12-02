@@ -2,6 +2,8 @@ import fetch from "node-fetch";
 import { createParser } from "eventsource-parser";
 import got from "got";
 import { AgentActionType, ConversationType, UserMessageType } from "./conversation";
+import { useDustCredentials } from "../credentials";
+import { useEffect, useState } from "react";
 
 export type DustAPICredentials = {
   apiKey: string;
@@ -255,4 +257,18 @@ export class DustApi {
       }
     }
   }
+}
+
+export function useDustApi(): DustApi | undefined {
+  const dustCredentials = useDustCredentials();
+  const [dustApi, setDustApi] = useState<DustApi | undefined>(undefined);
+  useEffect(() => {
+    (async () => {
+      if (dustCredentials) {
+        const api = new DustApi(dustCredentials);
+        setDustApi(api);
+      }
+    })();
+  }, [dustCredentials]);
+  return dustApi;
 }

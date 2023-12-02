@@ -1,6 +1,6 @@
 import { ActionPanel, Detail, showToast, Toast, useNavigation, Action, Icon } from "@raycast/api";
-import { DustApi, DustAPICredentials } from "./dust_api/api";
-import { SetCredentialsForm, useGetConfig } from "./credentials";
+import { DustApi, useDustApi } from "./dust_api/api";
+import { SetCredentialsForm, useDustCredentials } from "./credentials";
 import { useEffect, useState } from "react";
 import { addDustHistory } from "./history";
 
@@ -41,27 +41,11 @@ async function answerQuestion({
 }
 
 export function AskDustQuestion({ question }: { question: string }) {
-  const [dustCredentials, setDustCredentials] = useState<DustAPICredentials | undefined>(undefined);
-  const [dustApi, setDustApi] = useState<DustApi | undefined>(undefined);
+  const dustCredentials = useDustCredentials();
+  const dustApi = useDustApi();
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [dustAnswer, setDustAnswer] = useState<string | undefined>(undefined);
   const { push } = useNavigation();
-
-  useEffect(() => {
-    (async () => {
-      const credentials = await useGetConfig();
-      setDustCredentials(credentials);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (dustCredentials) {
-        const api = new DustApi(dustCredentials);
-        setDustApi(api);
-      }
-    })();
-  }, [dustCredentials]);
 
   useEffect(() => {
     if (dustApi && question) {
