@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { createParser } from "eventsource-parser";
 import got from "got";
-import { AgentActionType, ConversationType, UserMessageType } from "./conversation";
+import { ConversationType, UserMessageType } from "./conversation";
 import { useDustCredentials } from "../credentials";
 import { useEffect, useState } from "react";
 import { AgentConfigurationType } from "./agent";
@@ -18,7 +18,6 @@ export type AgentActionSuccessEvent = {
   created: number;
   configurationId: string;
   messageId: string;
-  action: AgentActionType;
 };
 
 // Event sent when tokens are streamed as the the agent is generating a message.
@@ -169,7 +168,11 @@ export class DustApi {
       reader.on("readable", () => {
         let chunk;
         while (null !== (chunk = reader.read())) {
-          parser.feed(new TextDecoder().decode(chunk));
+          if (typeof chunk === "string") {
+            parser.feed(chunk);
+          } else {
+            parser.feed(new TextDecoder().decode(chunk));
+          }
         }
       });
       reader.on("error", (err) => {

@@ -75,7 +75,6 @@ export function isUserMessageType(
  * Agent messages
  */
 
-export type AgentActionType = RetrievalActionType | DustAppRunActionType;
 export type AgentMessageStatus = "created" | "succeeded" | "failed" | "cancelled";
 
 /**
@@ -96,7 +95,6 @@ export type AgentMessageType = {
 
   configuration: AgentConfigurationType;
   status: AgentMessageStatus;
-  action: AgentActionType | null;
   content: string | null;
   error: {
     code: string;
