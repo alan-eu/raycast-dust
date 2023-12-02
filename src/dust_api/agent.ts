@@ -19,14 +19,17 @@ export type AgentConfigurationScope = "global" | "workspace" | "published" | "pr
 
 export type AgentVisibilityOverrideType = "workspace-unlisted" | "published-listed";
 
-export type AgentConfigurationType = {
+export interface AgentType {
   sId: string;
+  name: string;
+}
+
+export interface AgentConfigurationType extends AgentType {
   version: number;
 
   scope: AgentConfigurationScope;
   status: AgentConfigurationStatus;
 
-  name: string;
   description: string;
   pictureUrl: string;
-};
+}

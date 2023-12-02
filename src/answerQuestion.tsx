@@ -3,19 +3,22 @@ import { DustApi, useDustApi } from "./dust_api/api";
 import { SetCredentialsForm, useDustCredentials } from "./credentials";
 import { useEffect, useState } from "react";
 import { addDustHistory } from "./history";
+import { AgentType } from "./dust_api/agent";
 
 async function answerQuestion({
   question,
   dustApi,
   setDustAnswer,
   setConversationId,
+  agentId = "dust",
 }: {
   question: string;
   dustApi: DustApi;
   setDustAnswer: (answer: string) => void;
   setConversationId: (conversationId: string) => void;
+  agentId?: string;
 }) {
-  const { conversation, message, error } = await dustApi.createConversation({ question });
+  const { conversation, message, error } = await dustApi.createConversation({ question, agentId });
   if (error || !conversation || !message) {
     showToast({
       style: Toast.Style.Failure,
@@ -40,7 +43,13 @@ async function answerQuestion({
   }
 }
 
-export function AskDustQuestion({ question }: { question: string }) {
+export function AskDustQuestion({
+  question,
+  agent = { sId: "dust", name: "Dust" },
+}: {
+  question: string;
+  agent?: AgentType;
+}) {
   const dustCredentials = useDustCredentials();
   const dustApi = useDustApi();
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
@@ -50,7 +59,13 @@ export function AskDustQuestion({ question }: { question: string }) {
   useEffect(() => {
     if (dustApi && question) {
       (async () => {
-        await answerQuestion({ question, dustApi, setDustAnswer, setConversationId });
+        await answerQuestion({
+          question: question,
+          dustApi: dustApi,
+          agentId: agent.sId,
+          setDustAnswer: setDustAnswer,
+          setConversationId: setConversationId,
+        });
       })();
     }
   }, [dustApi, question]);
@@ -67,7 +82,7 @@ export function AskDustQuestion({ question }: { question: string }) {
 
   return (
     <Detail
-      markdown={dustAnswer || `Dust is thinking about your question: *${question}*`}
+      markdown={dustAnswer || `Dust agent \`${agent.name}\` is thinking about your question: *${question}*`}
       navigationTitle={question || "Ask Dust"}
       isLoading={!dustAnswer}
       actions={

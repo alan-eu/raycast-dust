@@ -4,6 +4,7 @@ import got from "got";
 import { AgentActionType, ConversationType, UserMessageType } from "./conversation";
 import { useDustCredentials } from "../credentials";
 import { useEffect, useState } from "react";
+import { AgentConfigurationType } from "./agent";
 
 export type DustAPICredentials = {
   apiKey: string;
@@ -84,10 +85,10 @@ export class DustApi {
     this._conversationApiUrl = `${DUST_API_URL}/${credentials.workspaceId}/assistant/conversations`;
   }
 
-  async createConversation({ question }: { question: string }): Promise<{
-    conversation: ConversationType | undefined;
-    message: UserMessageType | undefined;
-    error: string | undefined;
+  async createConversation({ question, agentId = "dust" }: { question: string; agentId?: string }): Promise<{
+    conversation?: ConversationType;
+    message?: UserMessageType;
+    error?: string;
   }> {
     const { apiKey } = this._credentials;
     try {
@@ -102,7 +103,7 @@ export class DustApi {
             content: question,
             mentions: [
               {
-                configurationId: "dust",
+                configurationId: agentId,
               },
             ],
             context: {
@@ -116,9 +117,9 @@ export class DustApi {
         },
         responseType: "json",
       });
-      return { conversation: response.body.conversation, message: response.body.message, error: undefined };
+      return { conversation: response.body.conversation, message: response.body.message };
     } catch (error: got.RequestError) {
-      return { conversation: undefined, message: undefined, error: error.message };
+      return { error: error.message };
     }
   }
 
@@ -255,6 +256,23 @@ export class DustApi {
           // Nothing to do on unsupported events
         }
       }
+    }
+  }
+
+  async getAgents(): Promise<{ agents?: AgentConfigurationType[]; error?: string }> {
+    const { apiKey, workspaceId } = this._credentials;
+    const agentsUrl = `${DUST_API_URL}/${workspaceId}/assistant/agent_configurations`;
+
+    try {
+      const response = await got.get(agentsUrl, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        responseType: "json",
+      });
+      return { agents: response.body.agentConfigurations };
+    } catch (error: got.RequestError) {
+      return { error: error.message };
     }
   }
 }

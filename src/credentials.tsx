@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DustAPICredentials } from "./dust/api";
+import { DustAPICredentials } from "./dust_api/api";
 import { Action, ActionPanel, Form, Icon, LocalStorage, popToRoot, showToast, Toast } from "@raycast/api";
 
 export function SetCredentialsForm() {
