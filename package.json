@@ -39,7 +39,7 @@
           "name": "search",
           "placeholder": "Ask a question",
           "type": "text",
-          "required": true
+          "required": false
         }
       ]
     },
@@ -58,12 +58,6 @@
       ]
     },
     {
-      "name": "explain",
-      "title": "Explain",
-      "description": "Explain highlighted text",
-      "mode": "view"
-    },
-    {
       "name": "history",
       "title": "Questions history",
       "description": "Show the last 10 questions and answers",
@@ -77,7 +71,7 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.62.2",
+    "@raycast/api": "^1.63.0",
     "date-fns": "^3.0.0-alpha.2",
     "eventsource-parser": "^1.1.1",
     "node-fetch": "^3.3.2"

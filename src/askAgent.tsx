@@ -2,9 +2,12 @@ import { Action, ActionPanel, Form, Icon, LaunchType, List, showToast, Toast, us
 import { useAgents } from "./agents";
 import AskDustCommand from "./ask";
 import { AgentConfigurationType } from "./dust_api/agent";
+import { useState } from "react";
 
 function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
   const { push } = useNavigation();
+  const [questionError, setQuestionError] = useState<string | undefined>(undefined);
+
   return (
     <Form
       actions={
@@ -26,7 +29,19 @@ function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
     >
       <Form.Description title="Agent" text={agent.name} />
       <Form.Description text={agent.description} />
-      <Form.TextArea id="question" title="Question" autoFocus enableMarkdown />
+      <Form.TextArea
+        id="question"
+        title="Question"
+        enableMarkdown
+        error={questionError}
+        onBlur={(event) => {
+          if (event.target.value?.length == 0) {
+            setQuestionError("You must ask a question");
+          } else {
+            setQuestionError(undefined);
+          }
+        }}
+      />
     </Form>
   );
 }

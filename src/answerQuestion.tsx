@@ -70,10 +70,6 @@ export function AskDustQuestion({
     }
   }, [question]);
 
-  if (!question) {
-    return null;
-  }
-
   const dustAssistantUrl = `https://dust.tt/w/${preferences.workspaceId}/assistant`;
 
   return (
