@@ -56,10 +56,11 @@ export default function DustHistoryCommand() {
             <List.Item
               key={item.question + item.date.getTime()}
               title={item.question}
-              accessories={[{ tag: item.agent || "Dust" }, { date: item.date }]}
+              accessories={showDetails ? [] : [{ tag: item.agent || "Dust" }, { date: item.date }]}
               detail={
                 <List.Item.Detail
-                  markdown={`### ${format(item.date, "yyyy-MM-dd HH:mm")}\n\n ### ${(item.question.length > 50
+                  markdown={`### ${format(item.date, "yyyy-MM-dd HH:mm")} - ${item.agent}\n\n ### ${(item.question
+                    .length > 50
                     ? item.question.slice(0, 50) + "..."
                     : item.question
                   ).replaceAll("\n", " ")} \n\n ${item.answer}`}
