@@ -63,7 +63,7 @@ export default function AskDustAgentCommand() {
   }
   return (
     <List isLoading={isLoading}>
-      {agents &&
+      {agents ? (
         Object.values(agents).map((agent) => (
           <List.Item
             key={agent.sId}
@@ -82,7 +82,10 @@ export default function AskDustAgentCommand() {
               </ActionPanel>
             }
           />
-        ))}
+        ))
+      ) : (
+        <List.EmptyView icon={Icon.XMarkCircle} title="No Dust agents loaded" />
+      )}
     </List>
   );
 }

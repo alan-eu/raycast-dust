@@ -75,7 +75,7 @@ export default function DustHistoryCommand() {
                     shortcut={{ modifiers: [], key: "return" }}
                   />
                   <Action.OpenInBrowser
-                    title="Continue on Dust"
+                    title="Continue On Dust"
                     url={`${dustAssistantUrl}/${item.conversationId}`}
                     icon={Icon.Globe}
                     shortcut={{ modifiers: ["cmd"], key: "return" }}

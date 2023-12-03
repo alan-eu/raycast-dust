@@ -78,7 +78,7 @@ export function AskDustQuestion({ question, agent = DUST_AGENT }: { question: st
             <Action.OpenInBrowser title="Open Dust" url={`${dustAssistantUrl}/new`} icon={Icon.Globe} />
           ) : dustApi && conversationId ? (
             <Action.OpenInBrowser
-              title="Continue on Dust"
+              title="Continue On Dust"
               url={`${dustAssistantUrl}/${conversationId}`}
               icon={Icon.Globe}
             />
