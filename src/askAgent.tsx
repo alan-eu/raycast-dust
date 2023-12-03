@@ -2,16 +2,16 @@ import { Action, ActionPanel, Form, Icon, LaunchType, List, showToast, Toast, us
 import { useAgents } from "./agents";
 import AskDustCommand from "./ask";
 import { AgentType } from "./dust_api/agent";
-import { useState } from "react";
-import { useForm, FormValidation } from "@raycast/utils";
+import { useForm } from "@raycast/utils";
+import { useEffect } from "react";
 
 interface AskAgentQuestionFormValues {
   question: string;
 }
 
-export function AskAgentQuestionForm({ agent }: { agent: AgentType }) {
+export function AskAgentQuestionForm({ agent, initialQuestion }: { agent: AgentType; initialQuestion?: string }) {
   const { push } = useNavigation();
-  const { handleSubmit, itemProps } = useForm<AskAgentQuestionFormValues>({
+  const { handleSubmit, itemProps, setValue } = useForm<AskAgentQuestionFormValues>({
     onSubmit(values) {
       push(
         <AskDustCommand launchType={LaunchType.UserInitiated} arguments={{ agent: agent, search: values.question }} />,
@@ -25,6 +25,12 @@ export function AskAgentQuestionForm({ agent }: { agent: AgentType }) {
       },
     },
   });
+  useEffect(() => {
+    if (!initialQuestion) {
+      return;
+    }
+    setValue("question", initialQuestion);
+  }, [initialQuestion]);
   return (
     <Form
       actions={
