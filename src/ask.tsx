@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function AskDustCommand(props: LaunchProps<{ arguments: { search: string; agent?: AgentType } }>) {
   const question = props.arguments.search;
-  const agent = props.arguments.agent;
+  const agent = props.arguments.agent || DUST_AGENT;
   const [selectedText, setSelectedText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -28,6 +28,6 @@ export default function AskDustCommand(props: LaunchProps<{ arguments: { search:
   return question ? (
     <AskDustQuestion question={question} agent={agent} />
   ) : (
-    <AskAgentQuestionForm agent={DUST_AGENT} initialQuestion={selectedText} />
+    <AskAgentQuestionForm initialQuestion={selectedText} agent={agent} />
   );
 }

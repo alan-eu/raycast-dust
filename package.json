@@ -52,7 +52,7 @@
           "name": "search",
           "placeholder": "Ask a question",
           "type": "text",
-          "required": true
+          "required": false
         }
       ]
     },
