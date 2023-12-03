@@ -3,13 +3,14 @@ import { DustApi, DustAPICredentials } from "./dust_api/api";
 import { useEffect, useState } from "react";
 import { addDustHistory } from "./history";
 import { AgentType } from "./dust_api/agent";
+import { DUST_AGENT } from "./agents";
 
 async function answerQuestion({
   question,
   dustApi,
   setDustAnswer,
   setConversationId,
-  agent = { sId: "dust", name: "Dust" },
+  agent = DUST_AGENT,
 }: {
   question: string;
   dustApi: DustApi;
@@ -43,13 +44,7 @@ async function answerQuestion({
   }
 }
 
-export function AskDustQuestion({
-  question,
-  agent = { sId: "dust", name: "Dust" },
-}: {
-  question: string;
-  agent?: AgentType;
-}) {
+export function AskDustQuestion({ question, agent = DUST_AGENT }: { question: string; agent?: AgentType }) {
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [dustAnswer, setDustAnswer] = useState<string | undefined>(undefined);
 

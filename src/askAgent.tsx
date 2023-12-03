@@ -1,10 +1,10 @@
 import { Action, ActionPanel, Form, Icon, LaunchType, List, showToast, Toast, useNavigation } from "@raycast/api";
 import { useAgents } from "./agents";
 import AskDustCommand from "./ask";
-import { AgentConfigurationType } from "./dust_api/agent";
+import { AgentType } from "./dust_api/agent";
 import { useState } from "react";
 
-function AskAgentQuestionForm({ agent }: { agent: AgentConfigurationType }) {
+export function AskAgentQuestionForm({ agent }: { agent: AgentType }) {
   const { push } = useNavigation();
   const [questionError, setQuestionError] = useState<string | undefined>(undefined);
 

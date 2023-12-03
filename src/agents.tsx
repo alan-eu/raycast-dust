@@ -1,7 +1,13 @@
-import { AgentConfigurationType } from "./dust_api/agent";
+import { AgentConfigurationType, AgentType } from "./dust_api/agent";
 import { DustApi, DustAPICredentials } from "./dust_api/api";
 import { useEffect, useState } from "react";
 import { getPreferenceValues, LocalStorage } from "@raycast/api";
+
+export const DUST_AGENT: AgentType = {
+  sId: "dust",
+  name: "Dust",
+  description: "An assistant with context on your company data.",
+};
 
 async function saveAgents(agents: { [id: string]: AgentConfigurationType }) {
   await LocalStorage.setItem("dust_agents", JSON.stringify(agents));

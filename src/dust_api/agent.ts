@@ -22,6 +22,7 @@ export type AgentVisibilityOverrideType = "workspace-unlisted" | "published-list
 export interface AgentType {
   sId: string;
   name: string;
+  description: string;
 }
 
 export interface AgentConfigurationType extends AgentType {
