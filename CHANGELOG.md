@@ -1,3 +1,3 @@
 # Dust.tt Changelog
 
-## [Initial Version] - 2023-11-28
+## [Initial Version] - 2023-12-03

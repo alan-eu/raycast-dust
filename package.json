@@ -5,7 +5,6 @@
   "description": "Query dust.tt AI agents",
   "icon": "dust.png",
   "author": "vineus",
-  "owner": "alan",
   "categories": [
     "Productivity"
   ],
