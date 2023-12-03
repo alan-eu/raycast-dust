@@ -1,8 +1,10 @@
 # Ask Dust.tt
 
-Query dust.tt
+Query the [dust.tt](https://dust.tt/) service
 
 ## Setup
+
+You need a dust.tt account to use this extension.
 
 ### API key
 
