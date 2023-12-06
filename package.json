@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "dust-tt",
-  "title": "Ask Dust.tt BETA",
+  "title": "Ask Dust BETA",
   "description": "Query dust.tt AI agents",
   "icon": "dust.png",
   "author": "vineus",
