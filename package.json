@@ -14,7 +14,7 @@
     {
       "name": "apiKey",
       "description": "Your Dust API key",
-      "type": "textfield",
+      "type": "password",
       "required": true,
       "title": "API key",
       "placeholder": "sk-xxxxxxxxxxxxxxxxxxxxxx"
