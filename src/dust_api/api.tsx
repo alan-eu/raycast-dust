@@ -379,7 +379,6 @@ export class DustApi {
               }
               const icon = ref.dataSourceId in MANAGED_SOURCES ? MANAGED_SOURCES[ref.dataSourceId].icon : undefined;
               const markdownIcon = icon ? `<img src="${icon}" width="16" height="16"> ` : "";
-              console.log("markdownIcon", markdownIcon);
               return `[${markdownIcon}[${refCounter[k]}](${link})]`;
             }
             return "";
