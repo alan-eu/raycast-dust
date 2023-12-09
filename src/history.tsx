@@ -1,6 +1,7 @@
 import { Action, ActionPanel, getPreferenceValues, Icon, List, LocalStorage, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+
 import { DustAPICredentials } from "./dust_api/api";
 
 export interface DustHistory {
