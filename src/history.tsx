@@ -28,10 +28,16 @@ export async function getDustHistory(): Promise<DustHistory[]> {
   if (!history) {
     return [];
   }
+  const now = new Date();
   const parsed_history = JSON.parse(history) as DustHistory[];
-  return parsed_history.map((h) => {
-    return { ...h, date: new Date(h.date) };
-  });
+  return parsed_history
+    .map((h) => {
+      return { ...h, date: new Date(h.date) };
+    })
+    .filter((h) => {
+      // remove items older than 30 days
+      return now.getTime() - h.date.getTime() < 30 * 24 * 60 * 60 * 1000;
+    });
 }
 
 export async function addDustHistory(history: DustHistory) {
