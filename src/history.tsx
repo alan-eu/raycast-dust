@@ -1,4 +1,15 @@
-import { Action, ActionPanel, getPreferenceValues, Icon, List, LocalStorage, showToast, Toast } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Alert,
+  confirmAlert,
+  getPreferenceValues,
+  Icon,
+  List,
+  LocalStorage,
+  showToast,
+  Toast,
+} from "@raycast/api";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 
@@ -96,8 +107,18 @@ export default function DustHistoryCommand() {
                     icon={Icon.Trash}
                     title="Clear All History"
                     onAction={async () => {
-                      await LocalStorage.setItem("dust_history", JSON.stringify([]));
-                      setHistory([]);
+                      await confirmAlert({
+                        title: "Are you sure you want to remove all items in history?",
+                        primaryAction: {
+                          title: "Clear",
+                          style: Alert.ActionStyle.Destructive,
+                          onAction: async () => {
+                            await LocalStorage.setItem("dust_history", JSON.stringify([]));
+                            setHistory([]);
+                            await showToast(Toast.Style.Success, "History cleared");
+                          },
+                        },
+                      });
                     }}
                     style={Action.Style.Destructive}
                   />
