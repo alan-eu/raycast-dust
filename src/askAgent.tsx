@@ -117,11 +117,26 @@ export default function AskDustAgentCommand() {
     });
   }
 
+  function sort(a: AgentConfigurationType, b: AgentConfigurationType) {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  }
+
   const agentsList: AgentConfigurationWithFavorite[] | undefined =
     agents && favoriteAgent
-      ? [favoriteAgent, ...Object.values(agents).filter((agent) => agent.sId !== favoriteAgent.sId)]
+      ? [
+          favoriteAgent,
+          ...Object.values(agents)
+            .filter((agent) => agent.sId !== favoriteAgent.sId)
+            .sort(sort),
+        ]
       : agents
-        ? Object.values(agents)
+        ? Object.values(agents).sort(sort)
         : undefined;
   return (
     <List isLoading={isLoading && isLoadingFavorite}>
