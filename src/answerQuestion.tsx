@@ -5,6 +5,7 @@ import { addDustHistory } from "./history";
 import { AgentType } from "./dust_api/agent";
 import { DUST_AGENT, MANAGED_SOURCES } from "./agents";
 import { DustDocument } from "./dust_api/conversation_events";
+import { AskAgentQuestionForm } from "./askAgent";
 
 async function answerQuestion({
   question,
@@ -88,6 +89,12 @@ export function AskDustQuestion({ question, agent = DUST_AGENT }: { question: st
             <>
               <Action.Paste content={dustAnswer} shortcut={{ modifiers: ["cmd"], key: "return" }} />
               <Action.CopyToClipboard content={dustAnswer} shortcut={{ modifiers: ["cmd"], key: "." }} />
+              <Action.Push
+                title="Edit Question"
+                icon={Icon.Pencil}
+                shortcut={{ modifiers: ["cmd"], key: "e" }}
+                target={<AskAgentQuestionForm agent={agent} initialQuestion={question} />}
+              />
             </>
           )}
           {dustDocuments && dustDocuments.length > 0 && (
