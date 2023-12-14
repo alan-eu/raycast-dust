@@ -86,7 +86,7 @@ export function AskDustQuestion({ question, agent = DUST_AGENT }: { question: st
           />
           {dustAnswer && (
             <>
-              <Action.Paste content={dustAnswer} shortcut={{ modifiers: ["cmd"], key: ";" }} />
+              <Action.Paste content={dustAnswer} shortcut={{ modifiers: ["cmd"], key: "return" }} />
               <Action.CopyToClipboard content={dustAnswer} shortcut={{ modifiers: ["cmd"], key: "." }} />
             </>
           )}
